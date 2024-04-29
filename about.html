@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #212121; /* Dark background color */
+            color: #fff; /* Text color */
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #language {
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 90%;
+            height: 300px;
+            margin-bottom: 10px;
+            resize: vertical;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #333; /* Darker background color for code area */
+            color: #fff; /* Text color */
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Code Editor</h1>
+    </header>
+    <main>
+        <select id="language">
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+            <option value="python">Java</option>
+            <option value="python">HTML</option>
+            <option value="python">C language</option>
+            <option value="python">CSS</option>
+            <!-- Add more options for other languages -->
+        </select>
+        <textarea id="code" placeholder="Enter your code here..."></textarea>
+        <button onclick="runCode()">Run</button>
+        <pre id="output"></pre>
+    </main>
+    <script>
+        function runCode() {
+            var language = document.getElementById("language").value;
+            var code = document.getElementById("code").value;
+            var output = document.getElementById("output");
+            output.textContent = '';
+
+            // Define the endpoint for executing code
+            var endpoint = '/run';
+
+            // Make a POST request to the server
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ language: language, code: code })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    output.textContent = data.error;
+                } else {
+                    output.textContent = data.output;
+                }
+            })
+            .catch(error => {
+                output.textContent = error.message;
+            });
+        }
+    </script>
+</body>
+</html>
